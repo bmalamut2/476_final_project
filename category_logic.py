@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 from api_tools import call_model_chat_completions
-from category_search import search_question
+from category_fallback import get_fallback_answer
 
 system_prompt = '''
     You are an expert Python developer. Write Python code to solve the provided questions. Only return valid Python code, ready to be run.
@@ -42,7 +42,7 @@ def answer_question(result: tuple(bool, str), question: str, code: str, max_call
 
         return result[1]
 
-    return search_question(question)
+    return get_fallback_answer(question)
 
 def logic_question(question: str) -> str:
     code = call_model_chat_completions(
