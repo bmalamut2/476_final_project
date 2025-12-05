@@ -14,6 +14,15 @@ def classify_question(input: str) -> str:
         system=system_prompt
     )
 
+def extract_final_answer(answer: str, question: str) -> str:
+    system_prompt = '''
+        Your goal is to extract the final answer from the model's response. The final answer should be concise and directly address the question asked. Reply only with the final answer.
+    '''
+    return call_model_chat_completions(
+        prompt=f"Question: {question}\nResponse: {answer}",
+        system=system_prompt
+    )
+
 def main(input: str) -> str:
     category = classify_question(input)
 
