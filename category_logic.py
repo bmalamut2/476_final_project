@@ -42,7 +42,7 @@ def answer_question(result: tuple(bool, str), question: str, code: str, max_call
 
         return result[1]
 
-    return get_fallback_answer(question)
+    return get_fallback_answer(question=question, history=code)
 
 def logic_question(question: str) -> str:
     code = call_model_chat_completions(

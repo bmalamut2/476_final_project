@@ -1,7 +1,7 @@
 from duckduckgo_search import DDGS
 
 from api_tools import call_model_chat_completions
-from fallback_question import get_fallback_answer
+from category_fallback import get_fallback_answer
 
 search_system_prompt = '''
     You are an expert researching agent. You have access to a search engine. Given a question, you will return a query to search for relevant information. Return only what you want to search.
@@ -47,7 +47,7 @@ def answer_question(question: str, query: str, result: tuple(bool, str), max_sea
             system = final_system_prompt
         )
 
-    return get_fallback_answer(question)
+    return get_fallback_answer(question=question, history=result)
 
 def search_question(question: str) -> str:
     query = call_model_chat_completions(
