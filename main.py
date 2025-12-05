@@ -9,24 +9,26 @@ def classify_question(input: str) -> str:
         SEARCH: Does the question require searching for external information on facts or trivia?
         Reply only with "LOGIC" or "SEARCH".
     '''
-    return call_model_chat_completions(
+    response = call_model_chat_completions(
         prompt=input,
         system=system_prompt
     )
+    return response.get('text', '')
 
 def extract_final_answer(answer: str, question: str) -> str:
     system_prompt = '''
         Your goal is to extract the final answer from the model's response. The final answer should be concise and directly address the question asked. Reply only with the final answer.
     '''
-    return call_model_chat_completions(
+    response = call_model_chat_completions(
         prompt=f"Question: {question}\nResponse: {answer}",
         system=system_prompt
     )
+    return response.get('text', '')
 
 def main(input: str) -> str:
     category = classify_question(input)
 
     if 'logic' in category.lower():
-        return logic_question(input)
+        return extract_final_answer(answer=logic_question(input), question=input)
     else:
-        return search_question(input)
+        return extract_final_answer(answer=search_question(input), question=input)

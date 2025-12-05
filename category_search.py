@@ -13,7 +13,7 @@ final_system_prompt = '''
     You are an expert researching agent. You will be given a question and results from a search engine to help you answer the question. Use the search results to produce a final answer to the question. Output only the final answer.
 '''
 
-def web_search(query: str) -> tuple(bool, str):
+def web_search(query: str) -> tuple[bool, str]:
     try:
         results = []
 
@@ -31,29 +31,31 @@ def web_search(query: str) -> tuple(bool, str):
     except Exception as e:
         return False, str(e)
 
-def answer_question(question: str, query: str, result: tuple(bool, str), max_searches = 5) -> str:
+def answer_question(question: str, query: str, result: tuple[bool, str], max_searches = 5) -> str:
     for _ in range(max_searches):
 
         if not result[0]:
-            new_query = call_model_chat_completions(
+            new_query_response = call_model_chat_completions(
                 prompt = f"Question: {question}\nPrevious Query: {query}\nError: {result[1]}\nProvide a new query to search for relevant information.",
                 system = fallback_search_system_prompt
             )
-            query = new_query
+            query = new_query_response.get('text', '')
             result = web_search(query)
 
-        return call_model_chat_completions(
+        final_answer_response = call_model_chat_completions(
             prompt = f"Question: {question}\nSearch Results:\n{result[1]}\nProvide a final answer to the question based on the search results.",
             system = final_system_prompt
         )
+        return final_answer_response.get('text', '')
 
     return get_fallback_answer(question=question, history=result)
 
 def search_question(question: str) -> str:
-    query = call_model_chat_completions(
+    query_response = call_model_chat_completions(
         prompt = f"Question: {question}\nProvide a query to search for relevant information.",
         system = search_system_prompt
     )
+    query = query_response.get('text', '')
     result = web_search(query)
 
     return answer_question(question=question, query=query, result=result)

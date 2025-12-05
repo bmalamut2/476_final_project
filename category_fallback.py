@@ -5,7 +5,8 @@ system_prompt = '''
 '''
 
 def get_fallback_answer(question: str, history: str) -> str:
-    return call_model_chat_completions(
+    response = call_model_chat_completions(
         system = system_prompt,
         prompt = f"Chat History:\n{history}\n\nQuestion:\n{question}"
     )
+    return response.get('text', '')
