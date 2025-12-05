@@ -6,9 +6,11 @@ from category_fallback import get_fallback_answer
 
 system_prompt = '''
     You are an expert Python developer. Write Python code to solve the provided questions. Only return valid Python code, ready to be run.
+    Please ensure that the Python code you write PRINTS the final answer to the question.
 '''
 fallback_system_prompt = '''
     You are an expert Python developer. You will be given a question, code from a previous attempt to solve it, and the error message from that code. Analyze the error message and fix the code accordingly. Only return valid Python code, ready to be run.
+    Please ensure that the Python code you write PRINTS the final answer to the question.
 '''
 
 def run_python(code: str) -> tuple[bool, str]:
